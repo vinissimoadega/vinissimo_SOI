@@ -1,0 +1,23 @@
+{
+    email admin@vinissimoadega.com.br
+}
+
+app.vinissimoadega.com.br {
+    log {
+        output stdout
+    }
+
+    header {
+        X-Frame-Options SAMEORIGIN
+        X-Content-Type-Options nosniff
+        Referrer-Policy same-origin
+    }
+
+    handle /api/* {
+        reverse_proxy api:4100
+    }
+
+    handle {
+        reverse_proxy web:3100
+    }
+}
