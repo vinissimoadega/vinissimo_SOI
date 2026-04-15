@@ -1,0 +1,106 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: vinissimo-soi-db
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      TZ: ${TZ}
+      PGTZ: ${TZ}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command:
+      - postgres
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - max_connections=100
+      - -c
+      - wal_level=replica
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+      - ./backups:/backups
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - vinissimo-soi-net
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: vinissimo-soi-api
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      TZ: ${TZ}
+      PORT: 4100
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:4100:4100"
+    volumes:
+      - ./apps/api/dist:/app/dist:ro
+    networks:
+      - vinissimo-soi-net
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: vinissimo-soi-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3100
+      NEXT_PUBLIC_APP_NAME: Viníssimo SOI
+      NEXT_PUBLIC_API_BASE_URL: /api/v1
+      API_INTERNAL_BASE_URL: http://api:4100/api/v1
+    depends_on:
+      api:
+        condition: service_started
+    ports:
+      - "127.0.0.1:3100:3100"
+    volumes:
+      - ./apps/web/.next:/app/.next:ro
+      - ./apps/web/public:/app/public:ro
+      - ./apps/web/next.config.mjs:/app/next.config.mjs:ro
+    networks:
+      - vinissimo-soi-net
+
+  proxy:
+    image: caddy:2-alpine
+    container_name: vinissimo-soi-proxy
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_started
+      api:
+        condition: service_started
+    ports:
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./data/caddy:/data
+      - ./config/caddy:/config
+    networks:
+      - vinissimo-soi-net
+
+networks:
+  vinissimo-soi-net:
+    name: vinissimo-soi-net
+    driver: bridge

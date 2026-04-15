@@ -1,0 +1,26 @@
+# Dependências
+node_modules/
+.next/
+dist/
+
+# Ambiente e segredos
+.env
+.env.local
+*.env
+
+# Backups e dados de runtime
+backups/
+data/
+*.tgz
+*.sql.gz
+*.bak.*
+
+# macOS
+.DS_Store
+._*
+
+# Logs
+*.log
+
+# Build
+.dockerignore

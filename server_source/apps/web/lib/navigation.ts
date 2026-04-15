@@ -1,0 +1,31 @@
+import {
+  AlertTriangle,
+  BarChart3,
+  Landmark,
+  Boxes,
+  ClipboardList,
+  DatabaseZap,
+  PhoneCall,
+  Receipt,
+  Settings,
+  ShoppingCart,
+  Store,
+  Truck,
+  Users,
+} from "lucide-react";
+
+export const navigation = [
+  { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+  { href: "/financial/overview", label: "Financeiro", icon: Landmark },
+  { href: "/crm", label: "CRM", icon: PhoneCall },
+  { href: "/products", label: "Produtos", icon: Boxes },
+  { href: "/suppliers", label: "Fornecedores", icon: Truck },
+  { href: "/customers", label: "Clientes", icon: Users },
+  { href: "/purchases", label: "Compras", icon: ShoppingCart },
+  { href: "/sales", label: "Vendas", icon: Store },
+  { href: "/inventory", label: "Estoque", icon: DatabaseZap },
+  { href: "/expenses", label: "Despesas", icon: Receipt },
+  { href: "/alerts", label: "Alertas", icon: AlertTriangle },
+  { href: "/decisions", label: "Decisões", icon: ClipboardList },
+  { href: "/settings", label: "Configurações", icon: Settings },
+] as const;

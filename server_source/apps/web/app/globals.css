@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #fbf8f5;
+  --foreground: #2b211f;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+* {
+  border-color: rgba(43, 33, 31, 0.08);
+}
+
+@layer base {
+  h1 {
+    @apply text-xl font-semibold tracking-tight text-grafite sm:text-2xl;
+  }
+
+  h2 {
+    @apply text-lg font-semibold tracking-tight text-grafite sm:text-xl;
+  }
+
+  h3 {
+    @apply text-sm font-semibold text-grafite sm:text-base;
+  }
+}
+
+@layer components {
+  .surface {
+    @apply rounded-2xl border border-black/5 bg-white shadow-soft;
+  }
+
+  .surface-muted {
+    @apply rounded-2xl border border-black/5 bg-vinho-50;
+  }
+
+  .page-shell {
+    @apply space-y-4 sm:space-y-6;
+  }
+
+  .page-header {
+    @apply flex flex-col gap-4 border-b border-black/5 pb-4 sm:flex-row sm:items-end sm:justify-between;
+  }
+
+  .page-header-actions {
+    @apply flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center;
+  }
+
+  .page-header-actions > * {
+    @apply w-full sm:w-auto;
+  }
+
+  .btn-primary {
+    @apply inline-flex min-h-[44px] items-center justify-center rounded-xl bg-vinho-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-vinho-800;
+  }
+
+  .btn-secondary {
+    @apply inline-flex min-h-[44px] items-center justify-center rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-medium text-grafite transition hover:bg-black/5;
+  }
+
+  .input-soft {
+    @apply h-11 min-h-[44px] rounded-xl border border-black/10 bg-white px-3 text-sm outline-none ring-0 placeholder:text-black/35 focus:border-vinho-900;
+  }
+
+  .table-shell {
+    @apply overflow-hidden rounded-2xl border border-black/5 bg-white shadow-soft;
+  }
+
+  .table-head {
+    @apply bg-vinho-50 text-left text-xs font-semibold uppercase tracking-wide text-black/55;
+  }
+
+  .table-cell {
+    @apply border-t border-black/5 px-4 py-3 text-sm text-grafite;
+  }
+}
